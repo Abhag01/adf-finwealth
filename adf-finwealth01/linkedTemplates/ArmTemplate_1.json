@@ -13,6 +13,55 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_sql_stg_fees')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sql_finwealth01",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SQL"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "FeeID",
+						"type": "varchar"
+					},
+					{
+						"name": "AccountID",
+						"type": "varchar"
+					},
+					{
+						"name": "FeeDate",
+						"type": "varchar"
+					},
+					{
+						"name": "FeeType",
+						"type": "varchar"
+					},
+					{
+						"name": "Amount",
+						"type": "varchar"
+					},
+					{
+						"name": "stg_load_timestamp",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "stg_fees"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_sql_stg_holdings')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1976,10 +2025,68 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_sql_stg_securities')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sql_stg_fees')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql_stg_holdings')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql_stg_performance')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql_stg_prices')]",
 				"[concat(variables('factoryId'), '/datasets/ds_sql_stg_trades')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_masterpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "exec_pl_ingest_csv_to_stg",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_ingest_AllSources",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "exec_pl_transform_stg_to_dwh",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "exec_pl_ingest_csv_to_stg",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_transform_stg_to_dwh",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_ingest_AllSources')]"
 			]
 		}
 	]

@@ -1752,6 +1752,501 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_masterpipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "exec_pl_ingest_csv_to_stg",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_ingest_AllSources",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "exec_pl_transform_stg_to_dwh",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "exec_pl_ingest_csv_to_stg",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_transform_stg_to_dwh",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_ingest_AllSources')]",
+				"[concat(variables('factoryId'), '/pipelines/pl_transform_stg_to_dwh')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_transform_stg_to_dwh')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "sp_load_dim_advisor",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_dim_advisor]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_dim_benchmark",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_advisor",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_dim_benchmark]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_dim_security",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_benchmark",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_dim_security]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_dim_account",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_client",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_dim_account]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_fact_holding",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_account",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_fact_holding]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_dim_client",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_security",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_dim_client]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_fact_cashflow",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_account",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_fact_cashflow]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_fact_performance",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_account",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_fact_performance]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_fact_trade",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_account",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_fact_trade]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_fact_fee",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_account",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_fact_fee]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_load_fact_security_price",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_dim_account",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dwh].[usp_load_fact_security_price]"
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "dp_logsuccess",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_fact_holding",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "sp_load_fact_trade",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "sp_load_fact_cashflow",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "sp_load_fact_fee",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "sp_load_fact_security_price",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "sp_load_fact_performance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_log_transform_summary]",
+							"storedProcedureParameters": {
+								"status": {
+									"value": "SUCCESS",
+									"type": "String"
+								},
+								"error_message": {
+									"value": "none"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "sp_logfailure",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "sp_load_fact_holding",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "sp_load_fact_trade",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "sp_load_fact_cashflow",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "sp_load_fact_fee",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "sp_load_fact_security_price",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "sp_load_fact_performance",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[usp_log_transform_summary]",
+							"storedProcedureParameters": {
+								"status": {
+									"value": "FAILED"
+								},
+								"error_message": {
+									"value": "none"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_sql_finwealth01",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sql_finwealth01')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_blob_accounts')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
