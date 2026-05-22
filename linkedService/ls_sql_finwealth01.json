@@ -1,0 +1,23 @@
+{
+	"name": "ls_sql_finwealth01",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "sql-finwealth01-server.database.windows.net",
+			"database": "sql-db-finwealth01",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "gosain",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "kvfinwealth01",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "secreat-sql-password"
+			}
+		}
+	}
+}
