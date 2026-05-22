@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-finwealth01"
+		},
+		"ls_blob_finwealth01_connectionString": {
+			"value": ""
+		},
+		"kvfinwealth01_properties_typeProperties_baseUrl": {
+			"value": "https://kv-finwealth01.vault.azure.net/"
+		},
+		"ls_sql_finwealth01_properties_typeProperties_server": {
+			"value": "sql-finwealth01-server.database.windows.net"
+		},
+		"ls_sql_finwealth01_properties_typeProperties_database": {
+			"value": "sql-db-finwealth01"
+		},
+		"ls_sql_finwealth01_properties_typeProperties_userName": {
+			"value": "gosain"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
