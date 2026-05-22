@@ -1,0 +1,54 @@
+{
+	"name": "ds_sql_stg_performance",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountID",
+				"type": "varchar"
+			},
+			{
+				"name": "MonthStart",
+				"type": "varchar"
+			},
+			{
+				"name": "ReturnPct",
+				"type": "varchar"
+			},
+			{
+				"name": "BenchmarkCode",
+				"type": "varchar"
+			},
+			{
+				"name": "BenchmarkReturnPct",
+				"type": "varchar"
+			},
+			{
+				"name": "ExcessReturnPct",
+				"type": "varchar"
+			},
+			{
+				"name": "CumulativeReturnPct",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_load_timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "stg_performance"
+		}
+	}
+}

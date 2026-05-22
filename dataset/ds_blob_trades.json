@@ -1,0 +1,63 @@
+{
+	"name": "ds_blob_trades",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "BLOB"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Trades.csv",
+				"container": "raw-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "TradeID",
+				"type": "String"
+			},
+			{
+				"name": "AccountID",
+				"type": "String"
+			},
+			{
+				"name": "SecurityID",
+				"type": "String"
+			},
+			{
+				"name": "TradeDate",
+				"type": "String"
+			},
+			{
+				"name": "SettleDate",
+				"type": "String"
+			},
+			{
+				"name": "Side",
+				"type": "String"
+			},
+			{
+				"name": "Price",
+				"type": "String"
+			},
+			{
+				"name": "Quantity",
+				"type": "String"
+			},
+			{
+				"name": "Amount",
+				"type": "String"
+			}
+		]
+	}
+}

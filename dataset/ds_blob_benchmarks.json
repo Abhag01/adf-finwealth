@@ -1,0 +1,47 @@
+{
+	"name": "ds_blob_benchmarks",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_blob_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "BLOB"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Benchmarks.csv",
+				"container": "raw-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "BenchmarkCode",
+				"type": "String"
+			},
+			{
+				"name": "Description",
+				"type": "String"
+			},
+			{
+				"name": "Currency",
+				"type": "String"
+			},
+			{
+				"name": "IndexValueDate",
+				"type": "String"
+			},
+			{
+				"name": "IndexValue",
+				"type": "String"
+			}
+		]
+	}
+}

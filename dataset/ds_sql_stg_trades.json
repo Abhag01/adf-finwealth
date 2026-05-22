@@ -1,0 +1,62 @@
+{
+	"name": "ds_sql_stg_trades",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "TradeID",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountID",
+				"type": "varchar"
+			},
+			{
+				"name": "SecurityID",
+				"type": "varchar"
+			},
+			{
+				"name": "TradeDate",
+				"type": "varchar"
+			},
+			{
+				"name": "SettleDate",
+				"type": "varchar"
+			},
+			{
+				"name": "Side",
+				"type": "varchar"
+			},
+			{
+				"name": "Price",
+				"type": "varchar"
+			},
+			{
+				"name": "Quantity",
+				"type": "varchar"
+			},
+			{
+				"name": "Amount",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_load_timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "stg_trades"
+		}
+	}
+}

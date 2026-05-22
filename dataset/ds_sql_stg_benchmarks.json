@@ -1,0 +1,46 @@
+{
+	"name": "ds_sql_stg_benchmarks",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "BenchmarkCode",
+				"type": "varchar"
+			},
+			{
+				"name": "Description",
+				"type": "varchar"
+			},
+			{
+				"name": "Currency",
+				"type": "varchar"
+			},
+			{
+				"name": "IndexValueDate",
+				"type": "varchar"
+			},
+			{
+				"name": "IndexValue",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_load_timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "stg_benchmarks"
+		}
+	}
+}

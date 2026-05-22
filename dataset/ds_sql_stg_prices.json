@@ -1,0 +1,38 @@
+{
+	"name": "ds_sql_stg_prices",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SecurityID",
+				"type": "varchar"
+			},
+			{
+				"name": "PriceDate",
+				"type": "varchar"
+			},
+			{
+				"name": "ClosePrice",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_load_timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "stg_prices"
+		}
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"name": "ds_sql_stg_clients",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ClientID",
+				"type": "varchar"
+			},
+			{
+				"name": "ClientName",
+				"type": "varchar"
+			},
+			{
+				"name": "Segment",
+				"type": "varchar"
+			},
+			{
+				"name": "RiskProfile",
+				"type": "varchar"
+			},
+			{
+				"name": "PrimaryAdvisorID",
+				"type": "varchar"
+			},
+			{
+				"name": "ClientSince",
+				"type": "varchar"
+			},
+			{
+				"name": "Country",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_load_timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "stg_clients"
+		}
+	}
+}

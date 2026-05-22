@@ -1,0 +1,50 @@
+{
+	"name": "ds_sql_stg_accounts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sql_finwealth01",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "AccountID",
+				"type": "varchar"
+			},
+			{
+				"name": "ClientID",
+				"type": "varchar"
+			},
+			{
+				"name": "AccountType",
+				"type": "varchar"
+			},
+			{
+				"name": "OpenDate",
+				"type": "varchar"
+			},
+			{
+				"name": "BaseCurrency",
+				"type": "varchar"
+			},
+			{
+				"name": "Status",
+				"type": "varchar"
+			},
+			{
+				"name": "stg_load_timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "stg_accounts"
+		}
+	}
+}
